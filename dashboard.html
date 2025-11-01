@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique de Maïs - ImmoMaisons</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="cart.css">
+    <!-- Overrides pour agrandir l'affichage -->
+    <style>
+      html { font-size: 18px; }
+      .container { max-width: 1400px; }
+      .dashboard { padding: 40px; }
+      .header h1 { font-size: 2.2rem; }
+      .user-info { gap: 18px; }
+      .user-badge { padding: 10px 18px; font-size: 1rem; }
+      /* correction: point-virgule et styles unifiés */
+      .logout-btn, .cart-btn { padding: 10px 18px; font-size: 1rem; border-radius: 8px; }
+      .card { padding: 28px; border-radius: 10px; }
+      .card h3 { font-size: 1.25rem; }
+      .card p { font-size: 1rem; }
+
+      /* Recherche : style compact comme la capture */
+      .search-form .search-row { display: flex; gap: 12px; align-items: center; margin-top: 15px; }
+      .search-form .search-row input[type="text"] { width: 150px; padding: 10px 12px; font-size: 1rem; border-radius: 6px; border: 2px solid #ddd; }
+      .search-form .search-row button { padding: 10px 16px; font-size: 1rem; border-radius: 6px; width: auto; }
+
+      .results { padding: 20px; font-size: 1rem; }
+      .cart-content { padding: 28px; }
+      .cart-header h3 { font-size: 1.25rem; }
+      .cart-item { padding: 14px 0; }
+      .cart-item-info strong { font-size: 1rem; }
+      .cart-item-actions div { font-size: 1rem; }
+      input[type="number"] { width: 80px; padding: 6px; font-size: 1rem; }
+      .footer { font-size: 1rem; }
+      .content .card, .search-form, .security-notice { min-height: 140px; }
+      .add-cart-btn { padding: 8px 12px; font-size: 0.95rem; }
+      :focus { outline: 3px solid rgba(102,126,234,0.35); outline-offset: 2px; }
+      @media (min-width: 1400px) {
+        html { font-size: 20px; }
+        .container { max-width: 1600px; }
+        .dashboard { padding: 50px; }
+        .card { padding: 32px; }
+        .header h1 { font-size: 2.6rem; }
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard">
+            <div class="header">
+                <h1>🌽 Boutique de Maïs</h1>
+                <div class="user-info">
+                    <span id="userBadge" class="user-badge"></span>
+                    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+                    <!-- Bouton panier ajouté -->
+                    <button id="cartBtn" class="cart-btn" onclick="toggleCart()">Panier (<span id="cartCount">0</span>)</button>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="card">
+                    <h3>🏠 Accueil</h3>
+                    <p>Bienvenue dans notre boutique de maïs en ligne. Découvrez notre sélection de maïs frais de qualité.</p>
+                </div>
+
+                <div class="card">
+                    <h3>🌽 Produits Disponibles</h3>
+                    <p>Notre magasin propose différents types de maïs : maïs sucré, maïs à pop-corn, maïs bio...</p>
+                </div>
+
+                <!-- Contenu pour les vendeurs -->
+                <div id="agentContent" style="display:none;">
+                    <div class="restricted-content">
+                        <h3>👷 Espace Vendeur</h3>
+                        <p>Vous êtes connecté en tant que vendeur. Vous pouvez gérer les stocks et les commandes.</p>
+                        <p>Vous avez accès aux outils de vente et de gestion des produits.</p>
+                    </div>
+                </div>
+
+                <!-- Contenu pour les admins -->
+                <div id="adminContent" style="display:none;">
+                    <div class="restricted-content">
+                        <h3>⚙️ Administration</h3>
+                        <p>Vous êtes connecté en tant qu'administrateur. Accès complet au système.</p>
+                        <p>Vous pouvez gérer les utilisateurs, les stocks, et voir les statistiques.</p>
+                        <a href="admin.html" style="color: #667eea; text-decoration: none; font-weight: bold;">
+                            → Accéder au panneau d'administration
+                        </a>
+                    </div>
+                    <div class="card">
+                        <h3>🔐 Logs de sécurité</h3>
+                        <div style="background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 14px; max-height: 400px; overflow-y: auto;" id="logsContainer">
+                            Chargement des logs...
+                        </div>
+                        <button onclick="clearLogs(); displayLogs();" style="margin-top: 10px; padding: 8px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">Effacer les logs</button>
+                    </div>
+                </div>
+
+                <!-- Zone de recherche de produits -->
+                <div class="search-form">
+                    <h3>🔍 Rechercher un produit</h3>
+                    <div class="search-row" role="search" aria-label="Formulaire de recherche de produit">
+                        <label for="searchInput" class="sr-only"></label>
+                        <input type="text" id="searchInput" aria-label="Recherche de produit" placeholder="Recherche">
+                        <button type="button" onclick="searchProduct()">Rechercher</button>
+                    </div>
+                    <div id="searchResults"></div>
+                </div>
+
+                <!-- Notice de sécurité -->
+                <div class="security-notice">
+                    <h4>🛡️ Protection de la session</h4>
+                    <ul>
+                        <li>Session vérifiée à chaque chargement de page</li>
+                        <li>Expiration automatique après 30 minutes d'inactivité</li>
+                        <li>Contrôle d'accès basé sur les rôles</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Boutique de Maïs - Système sécurisé © 2024</p>
+        </div>
+    </div>
+
+    <!-- Modal Panier -->
+    <div id="cartModal" class="cart-modal" style="display:none;">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Votre Panier</h3>
+                <button onclick="toggleCart()">Fermer</button>
+            </div>
+            <div id="cartItems" class="cart-items"></div>
+            <div class="cart-footer">
+                <div>Total: <strong id="cartTotal">0.00</strong>€</div>
+                <div class="cart-actions">
+                    <button onclick="checkout()">Commander</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

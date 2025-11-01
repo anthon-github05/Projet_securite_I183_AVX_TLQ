@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Boutique de Maïs</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard">
+            <div class="header">
+                <h1>⚙️ Administration</h1>
+                <div class="user-info">
+                    <span id="userBadge" class="user-badge"></span>
+                    <a href="dashboard.html" style="padding: 8px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px;">← Retour</a>
+                    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="card">
+                    <h3>👥 Gestion des utilisateurs</h3>
+                    <p>Vous êtes dans la section réservée aux administrateurs. Cette page est protégée par un contrôle d'accès au niveau du rôle.</p>
+                </div>
+
+                <div class="card">
+                    <h3>🌽 Gestion des stocks</h3>
+                    <p>Stock total de produits: 120 unités</p>
+                    <p>Maïs sucré: 50 unités</p>
+                    <p>Maïs à pop-corn: 30 unités</p>
+                    <p>Maïs bio: 25 unités</p>
+                    <p>Maïs grillé: 15 unités</p>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Statistiques</h3>
+                    <p>Nombre total d'utilisateurs: 3</p>
+                    <p>Nombre d'administrateurs: 1</p>
+                    <p>Nombre de vendeurs: 1</p>
+                    <p>Nombre de clients: 1</p>
+                </div>
+
+                <div class="card">
+                    <h3>🔐 Logs de sécurité</h3>
+                    <div style="background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 14px; max-height: 400px; overflow-y: auto;" id="logsContainer">
+                        Chargement des logs...
+                    </div>
+                    <button onclick="clearLogs(); displayLogs();" style="margin-top: 10px; padding: 8px 15px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;">Effacer les logs</button>
+                </div>
+
+                <div class="security-notice">
+                    <h4>🛡️ Protection de cette page</h4>
+                    <ul>
+                        <li>Contrôle d'accès strict: seuls les administrateurs peuvent voir cette page</li>
+                        <li>Vérification de session à chaque chargement</li>
+                        <li>Toutes les actions sont loggées pour audit</li>
+                        <li>Protection contre les accès non autorisés</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Boutique de Maïs - Système sécurisé © 2024</p>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

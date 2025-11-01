@@ -1,0 +1,244 @@
+/* Styles de base pour le site Benzothana */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+/* Page de connexion */
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.login-box h1 {
+    color: #667eea;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.login-box h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #5568d3;
+}
+
+.error-message {
+    color: red;
+    margin-top: 15px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.info-text {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+}
+
+/* Page principale */
+.dashboard {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.header h1 {
+    color: #667eea;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-badge {
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.badge-admin {
+    background: #e74c3c;
+}
+
+.badge-agent {
+    background: #3498db;
+}
+
+.badge-client {
+    background: #95a5a6;
+}
+
+.logout-btn {
+    padding: 8px 20px;
+    background: #e74c3c;
+    width: auto;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.card h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.restricted-content {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Formulaire de recherche */
+.search-form {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.search-form input {
+    width: 70%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.search-form button {
+    width: 25%;
+    padding: 10px;
+}
+
+.results {
+    margin-top: 20px;
+    padding: 15px;
+    background: #e8f5e9;
+    border-radius: 5px;
+}
+
+/* Protection notice */
+.security-notice {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.security-notice h4 {
+    color: #155724;
+    margin-bottom: 10px;
+}
+
+.security-notice ul {
+    margin-left: 20px;
+    color: #155724;
+}
+
+/* Footer */
+.footer {
+    margin-top: 30px;
+    text-align: center;
+    color: white;
+    font-size: 14px;
+}
+
