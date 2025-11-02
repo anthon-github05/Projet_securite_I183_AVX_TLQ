@@ -28,10 +28,6 @@ async function displayUserInfo() {
 }
 
 function displayContentByRole(role) {
-    if (role === 'agent' || role === 'admin') {
-        document.getElementById('agentContent').style.display = 'block';
-    }
-    
     if (role === 'admin') {
         document.getElementById('adminContent').style.display = 'block';
     }

@@ -307,8 +307,7 @@ async function checkAccess(requiredRole) {
     
     const roleLevel = {
         'client': 1,
-        'agent': 2,
-        'admin': 3
+        'admin': 2
     };
     
     return roleLevel[session.role] >= roleLevel[requiredRole];
