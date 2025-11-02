@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boutique de Maïs - ImmoMaisons</title>
+    <title>boutique-de-maïs - ImmoMaisons</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="cart.css">
-    <!-- Overrides pour agrandir l'affichage -->
     <style>
       html { font-size: 18px; }
       .container { max-width: 1400px; }
@@ -14,13 +13,11 @@
       .header h1 { font-size: 2.2rem; }
       .user-info { gap: 18px; }
       .user-badge { padding: 10px 18px; font-size: 1rem; }
-      /* correction: point-virgule et styles unifiés */
       .logout-btn, .cart-btn { padding: 10px 18px; font-size: 1rem; border-radius: 8px; }
       .card { padding: 28px; border-radius: 10px; }
       .card h3 { font-size: 1.25rem; }
       .card p { font-size: 1rem; }
 
-      /* Recherche : style compact comme la capture */
       .search-form .search-row { display: flex; gap: 12px; align-items: center; margin-top: 15px; }
       .search-form .search-row input[type="text"] { width: 150px; padding: 10px 12px; font-size: 1rem; border-radius: 6px; border: 2px solid #ddd; }
       .search-form .search-row button { padding: 10px 16px; font-size: 1rem; border-radius: 6px; width: auto; }
@@ -49,11 +46,10 @@
     <div class="container">
         <div class="dashboard">
             <div class="header">
-                <h1>🌽 Boutique de Maïs</h1>
+                <h1>🌽 boutique-de-maïs</h1>
                 <div class="user-info">
                     <span id="userBadge" class="user-badge"></span>
                     <button class="logout-btn" onclick="logout()">Déconnexion</button>
-                    <!-- Bouton panier ajouté -->
                     <button id="cartBtn" class="cart-btn" onclick="toggleCart()">Panier (<span id="cartCount">0</span>)</button>
                 </div>
             </div>
@@ -69,7 +65,6 @@
                     <p>Notre magasin propose différents types de maïs : maïs sucré, maïs à pop-corn, maïs bio...</p>
                 </div>
 
-                <!-- Contenu pour les vendeurs -->
                 <div id="agentContent" style="display:none;">
                     <div class="restricted-content">
                         <h3>👷 Espace Vendeur</h3>
@@ -78,7 +73,6 @@
                     </div>
                 </div>
 
-                <!-- Contenu pour les admins -->
                 <div id="adminContent" style="display:none;">
                     <div class="restricted-content">
                         <h3>⚙️ Administration</h3>
@@ -97,7 +91,6 @@
                     </div>
                 </div>
 
-                <!-- Zone de recherche de produits -->
                 <div class="search-form">
                     <h3>🔍 Rechercher un produit</h3>
                     <div class="search-row" role="search" aria-label="Formulaire de recherche de produit">
@@ -108,7 +101,6 @@
                     <div id="searchResults"></div>
                 </div>
 
-                <!-- Notice de sécurité -->
                 <div class="security-notice">
                     <h4>🛡️ Protection de la session</h4>
                     <ul>
@@ -121,11 +113,10 @@
         </div>
 
         <div class="footer">
-            <p>Boutique de Maïs - Système sécurisé © 2024</p>
+            <p>boutique-de-maïs - Système sécurisé © 2024</p>
         </div>
     </div>
 
-    <!-- Modal Panier -->
     <div id="cartModal" class="cart-modal" style="display:none;">
         <div class="cart-content">
             <div class="cart-header">

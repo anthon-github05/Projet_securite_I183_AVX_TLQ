@@ -1,61 +1,46 @@
-// Logique du dashboard avec protection d'accès - Boutique de Maïs
-
-// Vérification de session au chargement de la page
 window.addEventListener('DOMContentLoaded', async function() {
     await checkPageAccess();
     await displayUserInfo();
     displayLogs();
 });
 
-// Fonction pour vérifier l'accès à la page
-// SÉCURITÉ: Plus aucune variable globale pour bypass - vérification stricte obligatoire
 async function checkPageAccess() {
     const session = await checkSession();
     
-    // Vérification de session obligatoire - aucune exception
     if (!session) {
-        // Pas de session valide, redirection vers la page de connexion
         alert("Session expirée ou invalide. Veuillez vous reconnecter.");
         window.location.href = 'index.html';
         return;
     }
     
-    // Affichage selon le rôle de la session
     displayContentByRole(session.role);
 }
 
-// Affichage des informations utilisateur
 async function displayUserInfo() {
     const session = await checkSession();
     
     if (!session) return;
     
-    // Affichage du badge utilisateur
     const badge = document.getElementById('userBadge');
     const roleText = session.role.charAt(0).toUpperCase() + session.role.slice(1);
     badge.textContent = `${session.username} (${roleText})`;
     badge.classList.add('badge-' + session.role);
 }
 
-// Affichage du contenu selon le rôle
 function displayContentByRole(role) {
-    // Contenu pour les vendeurs
     if (role === 'agent' || role === 'admin') {
         document.getElementById('agentContent').style.display = 'block';
     }
     
-    // Contenu pour les admins uniquement
     if (role === 'admin') {
         document.getElementById('adminContent').style.display = 'block';
     }
 }
 
-// Fonction de recherche de produits (avec protection anti-injection)
 async function searchProduct() {
     const searchInput = document.getElementById('searchInput').value;
     const resultsDiv = document.getElementById('searchResults');
     
-    // Vérification de session avant recherche
     const session = await checkSession();
     if (!session) {
         alert("Session expirée!");
@@ -63,13 +48,8 @@ async function searchProduct() {
         return;
     }
     
-    // Vérification des droits (tous peuvent chercher) - session déjà vérifiée ci-dessus
-    
-    // Sanitization de l'input (protection contre injection SQL)
     const sanitizedInput = sanitizeInput(searchInput);
     
-    // Simulation de recherche dans la base de données des produits
-    // En production: cette requête serait faite côté serveur
     const results = simulateProductSearch(sanitizedInput);
     
     if (results.length > 0) {
@@ -87,9 +67,7 @@ async function searchProduct() {
     }
 }
 
-// Simulation de recherche de produits (remplace une vraie requête SQL)
 function simulateProductSearch(query) {
-    // Base de données des produits (simulation)
     const products = [
         { name: "Maïs sucré", type: "sucré", price: 2.50, stock: 50 },
         { name: "Maïs à pop-corn", type: "pop", price: 1.80, stock: 30 },
@@ -98,11 +76,6 @@ function simulateProductSearch(query) {
     ];
     
     const results = [];
-    
-    // Recherche simple (simulation de requête SQL)
-    // ATTENTION: C'est ici qu'on aurait une vraie requête SQL en production
-    // Exemple de ce qu'on NE devrait PAS faire: "SELECT * FROM products WHERE name LIKE '%" + query + "%'"
-    // Bonne pratique: utiliser des requêtes préparées avec placeholders
     
     for (let product of products) {
         if (product.name.toLowerCase().includes(query.toLowerCase()) || 
@@ -115,8 +88,7 @@ function simulateProductSearch(query) {
     return results;
 }
 
-// --- Fonctions du panier ---
-const CART_KEY = 'cart_items_benzothana';
+const CART_KEY = 'cart_items_site_de_mais';
 
 function getCart() {
     try {
@@ -134,7 +106,6 @@ function saveCart(cart) {
 
 function addToCart(item) {
     const cart = getCart();
-    // Cherche si l'article existe déjà
     const existing = cart.find(ci => ci.name === item.name);
     if (existing) {
         existing.qty = Math.min(existing.qty + (item.qty || 1), item.stock || 9999);
@@ -227,18 +198,14 @@ function checkout() {
         alert('Panier vide');
         return;
     }
-    // Simulation de commande: en production appeler une API
     alert('Commande simulée. Total: ' + document.getElementById('cartTotal').textContent + '€');
-    // Vider le panier après commande simulée
     saveCart([]);
     renderCart();
     toggleCart();
 }
 
-// Mise à jour du compteur au chargement
 window.addEventListener('DOMContentLoaded', updateCartCount);
 
-// Affichage des logs de sécurité
 function displayLogs() {
     const logs = getLogs();
     const logsContainer = document.getElementById('logsContainer');
@@ -251,7 +218,6 @@ function displayLogs() {
     }
     
     let html = '';
-    // Afficher les logs du plus récent au plus ancien
     logs.slice().reverse().forEach(log => {
         let color = '#ecf0f1';
         if (log.type === 'success') color = '#2ecc71';
@@ -267,7 +233,6 @@ function displayLogs() {
     logsContainer.innerHTML = html;
 }
 
-// Vérification automatique de session toutes les 30 secondes
 setInterval(async function() {
     const session = await checkSession();
     if (!session) {

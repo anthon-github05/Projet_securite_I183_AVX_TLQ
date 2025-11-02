@@ -1,16 +1,10 @@
-// Logique de la page admin avec protection stricte
-
-// Vérification de session au chargement
 window.addEventListener('DOMContentLoaded', async function() {
     await checkAdminAccess();
     await displayUserInfo();
     displayLogs();
 });
 
-// Fonction pour vérifier l'accès admin
-// SÉCURITÉ: Plus aucune variable globale pour bypass - protection stricte
 async function checkAdminAccess() {
-    // Vérification de session obligatoire
     const session = await checkSession();
     
     if (!session) {
@@ -19,19 +13,16 @@ async function checkAdminAccess() {
         return;
     }
     
-    // Vérification du rôle admin (protection stricte)
     if (session.role !== 'admin') {
         alert("❌ Accès refusé: Cette page est réservée aux administrateurs.");
         window.location.href = 'dashboard.html';
         return;
     }
     
-    // Log de l'accès admin (bonne pratique pour audit)
     console.log("Accès admin autorisé pour: " + session.username);
     addLog(`Accès à la page admin: ${session.username}`, 'info');
 }
 
-// Affichage des informations utilisateur
 async function displayUserInfo() {
     const session = await checkSession();
     
@@ -48,7 +39,6 @@ async function displayUserInfo() {
     }
 }
 
-// Affichage des logs de sécurité
 function displayLogs() {
     const logs = getLogs();
     const logsContainer = document.getElementById('logsContainer');
@@ -61,7 +51,6 @@ function displayLogs() {
     }
     
     let html = '';
-    // Afficher les logs du plus récent au plus ancien
     logs.slice().reverse().forEach(log => {
         let color = '#ecf0f1';
         if (log.type === 'success') color = '#2ecc71';

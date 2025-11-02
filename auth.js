@@ -1,8 +1,4 @@
-// Système d'authentification simple avec protection de session
-// ATTENTION: En production, utilisez un vrai backend avec JWT ou sessions sécurisées
-
-// Base de données client pour les utilisateurs: IndexedDB
-const DB_NAME = 'benzothana_users_db';
+const DB_NAME = 'site_de_mais_users_db';
 const DB_VERSION = 1;
 const USERS_STORE = 'users';
 
@@ -88,10 +84,7 @@ async function hashPassword(password, saltHex) {
     return toHex(digest);
 }
 
-// Ne crée aucun compte par défaut afin d'éviter d'exposer des identifiants en clair
-// Exception contrôlée: création d'un compte admin spécifique si absent
 async function ensureDefaultUsers() {
-    // Compte elliot.gabiout (admin principal)
     const username1 = 'elliot.gabiout';
     const existing1 = await dbGetUser(username1);
     if (!existing1) {
@@ -101,7 +94,6 @@ async function ensureDefaultUsers() {
         await dbPutUser({ username: username1, passwordHash: passwordHash1, salt: salt1, role: 'admin', email: 'elliot.gabiout@example.com' });
     }
     
-    // Compte M.Benzonana (client)
     const username2 = 'M.Benzonana';
     const existing2 = await dbGetUser(username2);
     if (!existing2) {
@@ -112,8 +104,7 @@ async function ensureDefaultUsers() {
     }
 }
 
-// Système de logging des tentatives de connexion
-const LOG_KEY = 'security_logs_benzothana';
+const LOG_KEY = 'security_logs_site_de_mais';
 const MAX_LOGS = 100;
 
 function addLog(message, type = 'info') {
@@ -130,10 +121,9 @@ function addLog(message, type = 'info') {
     logs.push({
         timestamp,
         message,
-        type // info, success, error, warning
+        type
     });
     
-    // Garder seulement les derniers 100 logs
     if (logs.length > MAX_LOGS) {
         logs = logs.slice(-MAX_LOGS);
     }
@@ -154,22 +144,12 @@ function clearLogs() {
     localStorage.removeItem(LOG_KEY);
 }
 
-// Fonction de protection basique contre injection SQL (simulée côté client)
-// EN RÉALITÉ: Cette protection doit être faite côté serveur
-// SÉCURITÉ: Protection toujours active - aucune possibilité de désactivation
-
 function sanitizeInput(input) {
-    // Protection toujours active - aucune variable globale pour bypass
-    // Suppression des caractères dangereux obligatoire
-    
-    // Protection basique: on supprime les caractères dangereux
     let sanitized = input.trim();
     
-    // On filtre les caractères spéciaux SQL communs
     const dangerousChars = ["'", '"', ';', '--', '/*', '*/', 'xp_', 'sp_'];
     for (let char of dangerousChars) {
         if (sanitized.includes(char)) {
-            // Pas de throw, on va juste logger (faute commune d'étudiant moyen)
             console.log("Tentative d'injection détectée: " + char);
             addLog(`Tentative d'injection SQL détectée: ${char}`, 'warning');
             sanitized = sanitized.replace(char, '');
@@ -179,9 +159,7 @@ function sanitizeInput(input) {
     return sanitized;
 }
 
-// Fonction de validation de mot de passe (très basique)
 async function validatePassword(username, password) {
-    // Sanitize pour éviter les injections
     username = sanitizeInput(username);
     password = sanitizeInput(password);
     
@@ -194,9 +172,7 @@ async function validatePassword(username, password) {
     return null;
 }
 
-// Gestion de la connexion
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialiser la base avec des comptes tests (hachés)
     ensureDefaultUsers();
     const loginForm = document.getElementById('loginForm');
     const signupForm = document.getElementById('signupForm');
@@ -209,42 +185,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
             const errorMsg = document.getElementById('errorMessage');
             
-            // Validation des champs (protection basique)
             if (!username || !password) {
                 errorMsg.textContent = "Veuillez remplir tous les champs";
                 return;
             }
             
-            // Authentification (comparaison avec hash)
             const user = await validatePassword(username, password);
             
             if (user) {
-                // Stockage de la session (localStorage - pas super sécurisé mais ok pour demo)
-                // EN PRODUCTION: Utilisez des tokens JWT avec httpOnly cookies
                 const sessionData = {
                     username: username,
                     role: user.role,
                     loginTime: Date.now(),
-                    // On met un timestamp pour expiration basique
-                    expires: Date.now() + (30 * 60 * 1000) // 30 minutes
+                    expires: Date.now() + (30 * 60 * 1000)
                 };
                 
-                // Ajout d'une signature basique pour vérifier l'intégrité de la session
-                // (ne remplace pas un vrai backend, mais rend la modification plus difficile)
                 const sessionString = JSON.stringify(sessionData);
                 const sessionHash = await hashPassword(sessionString + user.salt, user.salt);
                 sessionData.signature = sessionHash;
                 
                 localStorage.setItem('session', JSON.stringify(sessionData));
                 
-                // Logger la connexion réussie
                 addLog(`Connexion réussie: ${username} (${user.role})`, 'success');
                 
-                // Redirection vers le dashboard
                 window.location.href = 'dashboard.html';
             } else {
                 errorMsg.textContent = "Identifiant ou mot de passe faux";
-                // Logger la tentative échouée
                 addLog(`Tentative de connexion échouée: ${username}`, 'error');
             }
         });
@@ -284,18 +250,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const role = hasAdmin ? 'client' : 'admin';
             await dbPutUser({ username: suUsername, passwordHash, salt, role, email: suEmail });
             
-            // Logger la création de compte
             addLog(`Nouveau compte créé: ${suUsername} (${role})`, 'success');
             
             msg.style.color = 'green';
             msg.textContent = hasAdmin ? 'Compte créé. Vous pouvez vous connecter.' : 'Compte admin initial créé. Vous pouvez vous connecter.';
-            // Reset minimal
             signupForm.reset();
         });
     }
 });
 
-// Fonction pour vérifier si la session est valide
 async function checkSession() {
     const session = localStorage.getItem('session');
     
@@ -306,24 +269,19 @@ async function checkSession() {
     try {
         const sessionData = JSON.parse(session);
         
-        // Vérifier l'expiration (protection basique contre sessions éternelles)
         if (Date.now() > sessionData.expires) {
             localStorage.removeItem('session');
             return null;
         }
         
-        // Vérifier l'intégrité de la session si une signature existe
         if (sessionData.signature && sessionData.username) {
-            // Récupérer l'utilisateur pour obtenir son salt
             const user = await dbGetUser(sessionData.username);
             if (user) {
-                // Recréer la session sans la signature pour vérifier
                 const sessionCopy = { ...sessionData };
                 delete sessionCopy.signature;
                 const sessionString = JSON.stringify(sessionCopy);
                 const expectedHash = await hashPassword(sessionString + user.salt, user.salt);
                 
-                // Si la signature ne correspond pas, la session a été modifiée
                 if (expectedHash !== sessionData.signature) {
                     console.warn("⚠️ Session modifiée détectée - déconnexion forcée");
                     localStorage.removeItem('session');
@@ -335,13 +293,11 @@ async function checkSession() {
         
         return sessionData;
     } catch (e) {
-        // Si le parse échoue, on supprime et retourne null
         localStorage.removeItem('session');
         return null;
     }
 }
 
-// Fonction pour vérifier les droits d'accès
 async function checkAccess(requiredRole) {
     const session = await checkSession();
     
@@ -349,7 +305,6 @@ async function checkAccess(requiredRole) {
         return false;
     }
     
-    // Système de droits hiérarchique simple
     const roleLevel = {
         'client': 1,
         'agent': 2,
@@ -359,7 +314,6 @@ async function checkAccess(requiredRole) {
     return roleLevel[session.role] >= roleLevel[requiredRole];
 }
 
-// Fonction de déconnexion
 async function logout() {
     const session = await checkSession();
     if (session) {
